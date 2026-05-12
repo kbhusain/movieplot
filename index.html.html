@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bollywood Movie Plot Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .plot-output {
+            background: #f8f9fa;
+            padding: 30px;
+            border-top: 3px solid #667eea;
+            display: none;
+        }
+
+        .plot-output.active {
+            display: block;
+        }
+
+        .plot-title {
+            font-size: 2em;
+            color: #f5576c;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .plot-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .plot-section h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .plot-section p {
+            line-height: 1.8;
+            color: #555;
+            font-size: 1.05em;
+        }
+
+        .song-list {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .song-list h3 {
+            color: #c0392b;
+            margin-bottom: 15px;
+        }
+
+        .song-item {
+            background: white;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        .comedy-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Bollywood Plot Generator 🎭</h1>
+            <p>Create Your Own Masala Movie Magic!</p>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label for="plotType">Select Plot Type:</label>
+                <select id="plotType">
+                    <option value="rich-guy-poor-girl">Rich Guy + Poor Girl</option>
+                    <option value="rich-girl-poor-guy">Rich Girl + Poor Guy</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="villain">Evil In-Law:</label>
+                <select id="villain">
+                    <option value="mother">Dominating Mother-in-Law</option>
+                    <option value="father">Greedy Father-in-Law</option>
+                    <option value="brother">Jealous Brother-in-Law</option>
+                    <option value="sister">Manipulative Sister-in-Law</option>
+                    <option value="uncle">Scheming Uncle</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Movie Location:</label>
+                <select id="location">
+                    <option value="mumbai">Mumbai</option>
+                    <option value="punjab">Punjab</option>
+                    <option value="rajasthan">Rajasthan</option>
+                    <option value="goa">Goa</option>
+                    <option value="switzerland">Switzerland</option>
+                    <option value="london">London</option>
+                    <option value="dubai">Dubai</option>
+                    <option value="kashmir">Kashmir</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="songs">Maximum Number of Songs (1-15):</label>
+                <input type="number" id="songs" min="1" max="15" value="6">
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="sidekick">
+                <label for="sidekick">Add Comic Sidekick Character</label>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="comedy">
+                <label for="comedy">Include Comedy Scenes</label>
+            </div>
+
+            <button class="generate-btn" onclick="generatePlot()">🎥 Generate Movie Plot</button>
+        </div>
+
+        <div class="plot-output" id="plotOutput"></div>
+    </div>
+
+    <script>
+        const songTitles = {
+            romantic: [
+                "Pyaar Ka Pehla Pehla Ehsaas",
+                "Dil Mera Dhadakne Laga",
+                "Tere Bina Jeena Nahin",
+                "Chandni Raat Mein",
+                "Dil Ki Dhadkan",
+                "Sapno Ki Rani",
+                "Pehli Nazar Mein",
+                "Tumse Milke Dil Ka",
+                "Mere Khwabon Mein Jo Aaye"
+            ],
+            dance: [
+                "Nach Le Nach Le",
+                "Desi Beats",
+                "Shaadi Dance Number",
+                "Holi Celebration Dance",
+                "Punjabi Tadka",
+                "Garba Nights",
+                "Disco Deewane"
+            ],
+            sad: [
+                "Kyun Judaai Aayi",
+                "Dard Bhare Geet",
+                "Bichhda Yaar",
+                "Aansu Bhari Raatein",
+                "Dil Toota"
+            ],
+            item: [
+                "Mast Mast Item Number",
+                "Sheila Ki Jawani Type",
+                "Chikni Chameli Remix",
+                "Party Anthem"
+            ],
+            family: [
+                "Ghar Aaja Pardesi",
+                "Maa Ka Pyaar",
+                "Family Reunion Song"
+            ]
+        };
+
+        const sidekickNames = {
+            "rich-guy-poor-girl": ["Pappu", "Chhotu", "Golu", "Bunty"],
+            "rich-girl-poor-guy": ["Pinky", "Sweety", "Guddi", "Munna"]
+        };
+
+        const comedyScenes = [
+            "Sidekick tries to impress a girl and fails hilariously",
+            "Miscommunication leads to hero hiding in heroine's bedroom",
+            "Drunk uncle at wedding creates chaos",
+            "Hero's friend gives terrible romantic advice",
+            "Family members accidentally eat super spicy food",
+            "Sidekick pretends to be rich and gets caught",
+            "Comic chase sequence through busy market",
+            "Hero and sidekick swap identities with disastrous results"
+        ];
+
+        const locationDetails = {
+            mumbai: { setting: "bustling streets of Mumbai", landmark: "Marine Drive, Gateway of India" },
+            punjab: { setting: "colorful fields of Punjab", landmark: "Golden Temple, mustard fields" },
+            rajasthan: { setting: "royal palaces of Rajasthan", landmark: "Hawa Mahal, sand dunes" },
+            goa: { setting: "beaches of Goa", landmark: "beautiful beaches and beach shacks" },
+            switzerland: { setting: "snow-capped mountains of Switzerland", landmark: "Alpine meadows" },
+            london: { setting: "streets of London", landmark: "Big Ben, London Eye" },
+            dubai: { setting: "modern skyline of Dubai", landmark: "Burj Khalifa, luxury hotels" },
+            kashmir: { setting: "valleys of Kashmir", landmark: "Dal Lake, snow mountains" }
+        };
+
+        function generatePlot() {
+            const plotType = document.getElementById('plotType').value;
+            const villain = document.getElementById('villain').value;
+            const location = document.getElementById('location').value;
+            const maxSongs = parseInt(document.getElementById('songs').value);
+            const hasSidekick = document.getElementById('sidekick').checked;
+            const hasComedy = document.getElementById('comedy').checked;
+
+            const locationInfo = locationDetails[location];
+            const sidekickName = hasSidekick ? sidekickNames[plotType][Math.floor(Math.random() * sidekickNames[plotType].length)] : null;
+
+            let plot = '';
+            let movieTitle = '';
+            let heroName = '';
+            let heroineName = '';
+            let villainRelation = '';
+
+            // Generate character names and relationships
+            if (plotType === 'rich-guy-poor-girl') {
+                heroName = 'Rahul';
+                heroineName = 'Anjali';
+                movieTitle = '💰 Dil Se Dhadakta Hai Pyaar';
+                
+                switch(villain) {
+                    case 'mother': villainRelation = `${heroName}'s dominating mother`; break;
+                    case 'father': villainRelation = `${heroName}'s greedy father`; break;
+                    case 'brother': villainRelation = `${heroName}'s jealous brother`; break;
+                    case 'sister': villainRelation = `${heroName}'s manipulative sister`; break;
+                    case 'uncle': villainRelation = `${heroName}'s scheming uncle`; break;
+                }
+
+                plot = `
+                    <div class="plot-section">
+                        <h3><span class="emoji">👨‍💼</span>Act 1: The Meeting</h3>
+                        <p>${heroName} is the wealthy heir to a massive business empire in ${locationInfo.setting}. He's handsome, successful, but disillusioned with his luxurious life. One day, while escaping his corporate responsibilities, he accidentally bumps into ${heroineName}, a simple, hardworking girl from a middle-class family who works multiple jobs to support her family.</p>
+                        <p>Despite their different worlds, there's an instant spark. ${heroineName} is unimpressed by ${heroName}'s wealth and treats him like an ordinary person, which he finds refreshing.${hasSidekick ? ` ${heroName}'s loyal friend ${sidekickName} notices the chemistry and encourages him to pursue her.` : ''}</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">💕</span>Act 2: Romance Blooms</h3>
+                        <p>${heroName} starts secretly meeting ${heroineName}, hiding his true identity and wealth. They fall deeply in love as they explore ${locationInfo.landmark}. ${heroineName} loves ${heroName} for who he is, not knowing about his fortune worth ₹500 crores.</p>
+                        <p>Meanwhile, ${villainRelation} has already arranged ${heroName}'s marriage to a wealthy businessman's daughter to merge their companies and increase their wealth to ₹1000 crores. The business deal is worth hundreds of crores, and they won't let ${heroName} throw it away for a "nobody."</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">😱</span>Act 3: The Truth & Conflict</h3>
+                        <p>${heroineName} discovers ${heroName}'s true identity when she accidentally sees him at a high-society event. Feeling betrayed and realizing she can never fit into his world, she runs away heartbroken. ${villainRelation} threatens to destroy ${heroineName}'s family financially if she doesn't leave ${heroName} forever.</p>
+                        <p>To save her family from bankruptcy and humiliation, ${heroineName} sacrifices her love and disappears from ${heroName}'s life. ${heroName} is devastated and doesn't understand why she left.${hasSidekick ? ` ${sidekickName} investigates and discovers the evil plot.` : ''}</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">🎊</span>Act 4: The Grand Finale</h3>
+                        <p>${heroName} finally learns the truth about ${villainRelation}'s blackmail. In an emotional confrontation, he renounces his entire ₹500 crore fortune, declaring that ${heroineName}'s love is worth more than all the money in the world. He publicly calls off the arranged marriage, shocking high society.</p>
+                        <p>${villainRelation}, realizing their monetary schemes have failed and seeing ${heroName}'s unwavering love, has a change of heart. ${heroName} rushes to find ${heroineName} just as she's about to leave the city forever. In a dramatic rain-soaked reunion at ${locationInfo.landmark}, they confess their love, and the family finally accepts their relationship.</p>
+                        <p><strong>THE END - Love triumphs over money! 💑</strong></p>
+                    </div>
+                `;
+            } else {
+                heroName = 'Raj';
+                heroineName = 'Pooja';
+                movieTitle = '👑 Ameer Dil, Gareeb Dil';
+                
+                switch(villain) {
+                    case 'mother': villainRelation = `${heroineName}'s dominating mother`; break;
+                    case 'father': villainRelation = `${heroineName}'s greedy father`; break;
+                    case 'brother': villainRelation = `${heroineName}'s jealous brother`; break;
+                    case 'sister': villainRelation = `${heroineName}'s manipulative sister`; break;
+                    case 'uncle': villainRelation = `${heroineName}'s scheming uncle`; break;
+                }
+
+                plot = `
+                    <div class="plot-section">
+                        <h3><span class="emoji">👨‍🎨</span>Act 1: The Meeting</h3>
+                        <p>${heroineName} is the daughter of a business tycoon worth ₹800 crores, living a sheltered life of luxury in ${locationInfo.setting}. ${heroName} is a struggling artist/mechanic/teacher who dreams big but has only ₹50,000 in his bank account. They meet by chance when ${heroineName}'s car breaks down, and ${heroName} helps her.</p>
+                        <p>${heroineName} is captivated by ${heroName}'s simplicity, honesty, and passion for life - qualities missing in her world of fake smiles and business deals.${hasSidekick ? ` ${heroineName}'s best friend ${sidekickName} helps them meet secretly.` : ''}</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">💕</span>Act 2: Romance Blooms</h3>
+                        <p>${heroineName} starts living a double life, secretly meeting ${heroName} and experiencing the simple joys of ordinary life. She hides her wealth and pretends to be middle-class. They fall madly in love while exploring ${locationInfo.landmark}, sharing street food and simple pleasures.</p>
+                        <p>However, ${villainRelation} has already arranged ${heroineName}'s marriage to a billionaire's son to create a ₹2000 crore business empire. The merger will make them the richest family in the country, and they view ${heroName} as a gold-digging threat to their fortune.</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">😱</span>Act 3: The Truth & Conflict</h3>
+                        <p>${heroName} discovers ${heroineName}'s true identity when he accidentally arrives at her mansion for a job interview. Feeling humiliated and manipulated, he feels their love was built on lies. ${villainRelation} publicly insults ${heroName}, calling him a gold-digger who wants to steal their ₹800 crore fortune.</p>
+                        <p>To prove he loves ${heroineName} for who she is, not her money, ${heroName} walks away from her life, choosing his self-respect over love. ${heroineName} is devastated.${hasSidekick ? ` ${sidekickName} tries to convince ${heroName} to fight for his love.` : ''}</p>
+                    </div>
+
+                    <div class="plot-section">
+                        <h3><span class="emoji">🎊</span>Act 4: The Grand Finale</h3>
+                        <p>${heroineName} rebels against her family for the first time, declaring she'll marry ${heroName} or no one. She renounces her ₹800 crore inheritance and runs away from home to prove her love is real. She finds ${heroName} and tells him she chooses love over luxury.</p>
+                        <p>Meanwhile, ${heroName} has achieved success through his hard work, earning respect (though not riches). ${villainRelation}, seeing ${heroineName}'s determination and ${heroName}'s integrity, realizes that true wealth is in character, not bank accounts. In an emotional climax at ${locationInfo.landmark}, the family accepts their love and gives their blessing.</p>
+                        <p><strong>THE END - True love conquers all! 💑</strong></p>
+                    </div>
+                `;
+            }
+
+            // Generate songs
+            const songs = generateSongs(maxSongs, plotType);
+            let songsHTML = `
+                <div class="song-list">
+                    <h3><span class="emoji">🎵</span>Song Playlist (${songs.length} Songs)</h3>
+            `;
+            songs.forEach((song, index) => {
+                songsHTML += `<div class="song-item"><strong>Song ${index + 1}:</strong> ${song.title} <em>(${song.situation})</em></div>`;
+            });
+            songsHTML += '</div>';
+
+            // Generate comedy scenes
+            let comedyHTML = '';
+            if (hasComedy) {
+                const numComedyScenes = Math.min(4, Math.floor(maxSongs / 2));
+                const selectedScenes = [];
+                const availableScenes = [...comedyScenes];
+                
+                if (hasSidekick) {
+                    availableScenes[0] = availableScenes[0].replace('Sidekick', sidekickName);
+                    availableScenes[3] = availableScenes[3].replace("Hero's friend", sidekickName);
+                    availableScenes[5] = availableScenes[5].replace('Sidekick', sidekickName);
+                    availableScenes[7] = availableScenes[7].replace('sidekick', sidekickName);
+                }
+
+                for (let i = 0; i < numComedyScenes; i++) {
+                    const randomIndex = Math.floor(Math.random() * availableScenes.length);
+                    selectedScenes.push(availableScenes.splice(randomIndex, 1)[0]);
+                }
+
+                comedyHTML = `
+                    <div class="comedy-section">
+                        <h3><span class="emoji">😂</span>Comedy Scenes</h3>
+                `;
+                selectedScenes.forEach((scene, index) => {
+                    comedyHTML += `<div class="song-item"><strong>Scene ${index + 1}:</strong> ${scene}</div>`;
+                });
+                comedyHTML += '</div>';
+            }
+
+            // Display output
+            document.getElementById('plotOutput').innerHTML = `
+                <div class="plot-title">${movieTitle}</div>
+                ${plot}
+                ${songsHTML}
+                ${comedyHTML}
+            `;
+            document.getElementById('plotOutput').classList.add('active');
+            document.getElementById('plotOutput').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateSongs(maxSongs, plotType) {
+            const songs = [];
+            let songPool = {
+                romantic: [...songTitles.romantic],
+                dance: [...songTitles.dance],
+                sad: [...songTitles.sad],
+                item: [...songTitles.item],
+                family: [...songTitles.family]
+            };
+
+            // Required songs in order
+            const sequence = [
+                { type: 'romantic', situation: 'First meeting/love at first sight' },
+                { type: 'dance', situation: 'Celebration/Festival sequence' },
+                { type: 'romantic', situation: 'Love confession' },
+                { type: 'item', situation: 'Item number/Club scene' },
+                { type: 'sad', situation: 'Separation/Heartbreak' },
+                { type: 'family', situation: 'Family acceptance/reunion' },
+                { type: 'romantic', situation: 'Romantic duet in exotic location' },
+                { type: 'dance', situation: 'Wedding celebration' },
+                { type: 'romantic', situation: 'Dream sequence' },
+                { type: 'sad', situation: 'Emotional breakdown' },
+                { type: 'dance', situation: 'Holi/Festival dance' },
+                { type: 'romantic', situation: 'Rain dance/Romantic moment' },
+                { type: 'item', situation: 'Special appearance item number' },
+                { type: 'family', situation: 'Family gathering song' },
+                { type: 'romantic', situation: 'Grand finale love song' }
+            ];
+
+            for (let i = 0; i < Math.min(maxSongs, sequence.length); i++) {
+                const songType = sequence[i];
+                if (songPool[songType.type].length > 0) {
+                    const randomIndex = Math.floor(Math.random() * songPool[songType.type].length);
+                    const title = songPool[songType.type].splice(randomIndex, 1)[0];
+                    songs.push({
+                        title: title,
+                        situation: songType.situation
+                    });
+                } else {
+                    // If pool is empty, reuse from romantic songs
+                    songs.push({
+                        title: songTitles.romantic[i % songTitles.romantic.length],
+                        situation: songType.situation
+                    });
+                }
+            }
+
+            return songs;
+        }
+    </script>
+</body>
+</html>
